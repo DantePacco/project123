@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, Maximize, RotateCcw } from 'lucide-react';
-import { Video, TextOverlay } from '../types';
+import { VideoFile, TextOverlay } from '../types';
 
 interface VideoPreviewProps {
-  video: Video | null;
+  video: VideoFile | null;
   textOverlays: TextOverlay[];
   currentTime: number;
   onTimeUpdate: (time: number) => void;
@@ -32,7 +32,7 @@ export default function VideoPreview({
   useEffect(() => {
     if (videoRef.current) {
       if (isPlaying) {
-        videoRef.current.play();
+        videoRef.current.play().catch(console.error);
       } else {
         videoRef.current.pause();
       }
@@ -61,9 +61,14 @@ export default function VideoPreview({
   };
 
   const getVisibleOverlays = () => {
-    return textOverlays.filter(overlay => 
-      currentTime >= overlay.startTime && currentTime <= overlay.endTime
-    );
+    try {
+      return textOverlays.filter(overlay => 
+        currentTime >= overlay.startTime && currentTime <= overlay.endTime
+      );
+    } catch (error) {
+      console.error('Error filtering overlays:', error);
+      return [];
+    }
   };
 
   if (!video) {
@@ -100,14 +105,17 @@ export default function VideoPreview({
             key={overlay.id}
             className="absolute pointer-events-none"
             style={{
-              left: `${overlay.position.x}%`,
-              top: `${overlay.position.y}%`,
+              left: `${overlay.x}%`,
+              top: `${overlay.y}%`,
               fontSize: `${overlay.fontSize}px`,
               color: overlay.color,
               fontWeight: overlay.fontWeight,
-              textAlign: overlay.textAlign as any,
+              textAlign: overlay.textAlign,
               textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
               transform: 'translate(-50%, -50%)',
+              width: `${overlay.width}%`,
+              height: `${overlay.height}%`,
+              opacity: overlay.opacity,
             }}
           >
             {overlay.text}
