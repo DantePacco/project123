@@ -63,7 +63,23 @@ function App() {
   const handleAddOverlay = useCallback((videoId: string, overlay: Omit<TextOverlay, 'id'>) => {
     const newOverlay: TextOverlay = {
       ...overlay,
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      text: overlay.text || 'Enter your text here',
+      x: overlay.x || 15,
+      y: overlay.y || 50,
+      width: overlay.width || 70,
+      height: overlay.height || 20,
+      fontSize: overlay.fontSize || 24,
+      fontWeight: overlay.fontWeight || '600',
+      color: overlay.color || '#ffffff',
+      outlineColor: overlay.outlineColor || '#000000',
+      outlineWidth: overlay.outlineWidth || 2,
+      opacity: overlay.opacity || 1,
+      startTime: overlay.startTime || 0,
+      endTime: overlay.endTime || 5,
+      fontFamily: overlay.fontFamily || 'Inter',
+      textAlign: overlay.textAlign || 'center',
+      animation: overlay.animation || 'none'
     };
     
     setVideos(prev => prev.map(video => 
